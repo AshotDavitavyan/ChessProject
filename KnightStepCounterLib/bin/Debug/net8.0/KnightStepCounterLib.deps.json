@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "KnightStepCounterLib/1.0.0": {
+        "dependencies": {
+          "CoordinatesLib": "1.0.0"
+        },
+        "runtime": {
+          "KnightStepCounterLib.dll": {}
+        }
+      },
+      "CoordinatesLib/1.0.0": {
+        "runtime": {
+          "CoordinatesLib.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "KnightStepCounterLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CoordinatesLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,125 @@
+<Window x:Class="GameWindows.SecondGameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:GameWindows"
+        mc:Ignorable="d"
+        Title="SecondGameWindow" Height="600" Width="500">
+    <Grid Name="ParentGrid">
+        <Grid Name="ChessBoardGrid" Width="400" Height="400" VerticalAlignment="Center" HorizontalAlignment="Center" Background="SaddleBrown" Margin="10,0,0,0">
+            			<Grid Width="40" Height="320" HorizontalAlignment="Left">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Text="1" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="1" Text="2" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="2" Text="3" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="3" Text="4" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="4" Text="5" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="5" Text="6" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="6" Text="7" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="7" Text="8" FontSize="25" TextAlignment="Center"></TextBlock>
+			</Grid>
+			<Grid Width="40" Height="320" HorizontalAlignment="Right">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+					<RowDefinition Height="40"></RowDefinition>
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Text="1" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="1" Text="2" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="2" Text="3" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="3" Text="4" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="4" Text="5" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="5" Text="6" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="6" Text="7" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Row="7" Text="8" FontSize="25" TextAlignment="Center"></TextBlock>
+			</Grid>
+			<Grid Width="320" Height="40" VerticalAlignment="Top">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="40" ></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Column="0" Text="A" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="1" Text="B" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="2" Text="C" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="3" Text="D" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="4" Text="E" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="5" Text="F" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="6" Text="G" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="7" Text="H" FontSize="25" TextAlignment="Center"></TextBlock>
+			</Grid>
+			<Grid Width="320" Height="40" VerticalAlignment="Bottom">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+					<ColumnDefinition Width="40"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Column="0" Text="A" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="1" Text="B" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="2" Text="C" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="3" Text="D" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="4" Text="E" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="5" Text="F" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="6" Text="G" FontSize="25" TextAlignment="Center"></TextBlock>
+				<TextBlock Grid.Column="7" Text="H" FontSize="25" TextAlignment="Center"></TextBlock>
+			</Grid>
+	        <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="LightGoldenrodYellow" BorderThickness="3">
+		        <Grid Name="ChessBoardSquares" MouseDown="ChessBoardSquares_MouseDown"  Width="320" Height="320" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray">
+			        <Grid.RowDefinitions>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+				        <RowDefinition Height="40"/>
+			        </Grid.RowDefinitions>
+			        <Grid.ColumnDefinitions>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+				        <ColumnDefinition Width="40"/>
+			        </Grid.ColumnDefinitions>
+		        </Grid>
+	        </Border>
+        </Grid>
+	    <Grid Name="Instructions" Width="400" Height="80" VerticalAlignment="Top">
+		    <Label Name="InstructionsLabel" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">Pick the start position for the knight.</Label>
+	    </Grid>
+	    <Grid Name="Buttons" Width="400" Height="60" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+		    <Button Click="ButtonBack_Click" Width="100" Height="50" FontSize="20" HorizontalAlignment="Left" Background="SaddleBrown">Back</Button>
+		    <Button Click="StartButton_Click" Name="StartButton" Width="100" Height="50" FontSize="20" HorizontalAlignment="Right" Background="SaddleBrown">Start</Button>
+	    </Grid>
+    </Grid>
+
+</Window>
