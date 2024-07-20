@@ -40,3 +40,4 @@ C:\Users\ashot\RiderProjects\CP\ChessBotLib\obj\Debug\net8.0\ChessBotLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessBotLib\obj\Debug\net8.0\refint\ChessBotLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessBotLib\obj\Debug\net8.0\ChessBotLib.pdb
 C:\Users\ashot\RiderProjects\CP\ChessBotLib\obj\Debug\net8.0\ref\ChessBotLib.dll
+C:\Users\ashot\RiderProjects\CP\ChessBotLib\obj\Debug\net8.0\ChessBotLib.sourcelink.json

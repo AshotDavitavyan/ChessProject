@@ -55,7 +55,7 @@ public static class ChessBot
 		{
 			if (coordinate.Color != board.WhoseTurn && coordinate.Color != EPieceColor.Mixed)
 				continue;
-			ChessPiece? possibleKing = board.IsPieceOnPosition(coordinate);
+			ChessPiece? possibleKing = board.FindPieceOnPosition(coordinate);
 			if (possibleKing is not null && possibleKing is King)
 				continue;
 			List<ChessPiece> pieces = board.WhoseTurn == EPieceColor.Black ? board.BlackPieces : board.WhitePieces;
@@ -73,7 +73,7 @@ public static class ChessBot
 						continue;
 					}
 					board.UnmakeMove();
-					Move move = new Move(board.ActivePiece, coordinate, board.IsPieceOnPosition(coordinate));
+					Move move = new Move(board.ActivePiece, coordinate, board.FindPieceOnPosition(coordinate));
 					moves.Add(move);
 				}
 			}

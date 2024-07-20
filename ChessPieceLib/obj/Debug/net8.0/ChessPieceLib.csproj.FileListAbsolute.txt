@@ -28,3 +28,4 @@ C:\Users\ashot\RiderProjects\CP\ChessPieceLib\obj\Debug\net8.0\ChessPieceLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessPieceLib\obj\Debug\net8.0\refint\ChessPieceLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessPieceLib\obj\Debug\net8.0\ChessPieceLib.pdb
 C:\Users\ashot\RiderProjects\CP\ChessPieceLib\obj\Debug\net8.0\ref\ChessPieceLib.dll
+C:\Users\ashot\RiderProjects\CP\ChessPieceLib\obj\Debug\net8.0\ChessPieceLib.sourcelink.json

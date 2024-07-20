@@ -20,3 +20,4 @@ C:\Users\ashot\RiderProjects\CP\CoordinatesLib\obj\Debug\net8.0\CoordinatesLib.d
 C:\Users\ashot\RiderProjects\CP\CoordinatesLib\obj\Debug\net8.0\refint\CoordinatesLib.dll
 C:\Users\ashot\RiderProjects\CP\CoordinatesLib\obj\Debug\net8.0\CoordinatesLib.pdb
 C:\Users\ashot\RiderProjects\CP\CoordinatesLib\obj\Debug\net8.0\ref\CoordinatesLib.dll
+C:\Users\ashot\RiderProjects\CP\CoordinatesLib\obj\Debug\net8.0\CoordinatesLib.sourcelink.json

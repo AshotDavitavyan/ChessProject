@@ -78,3 +78,4 @@ C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\refint\Game
 C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\GameWindows.pdb
 C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\GameWindows.genruntimeconfig.cache
 C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\ref\GameWindows.dll
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\GameWindows.sourcelink.json

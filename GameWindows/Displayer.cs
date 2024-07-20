@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -5,6 +6,7 @@ using ChessBoardLib;
 using CoordinatesLib;
 using System.Windows.Shapes;
 using ChessPieceLib;
+using Path = System.Windows.Shapes.Path;
 
 namespace GameWindows;
 
@@ -81,17 +83,19 @@ public static class ChessBoardDisplayer
 		return null;
 	}
 	
-	public static string GenerateTheUri(ChessPiece piece)
+	public static string GenerateTheUri(string path, ChessPiece piece)
 	{
-		return ("C:\\Users\\ashot\\RiderProjects\\ChessProjectWpf\\images\\" + piece.ToString() + piece.Color.ToString() + ".png");
+		return (path + piece.ToString() + piece.Color.ToString() + ".png");
 	}
 
 	public static void IterateAndAdd(List<ChessPiece> piecesList, Grid chessBoardSquares)
 	{
 		foreach (ChessPiece piece in piecesList)
 		{
+			var path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
+			path += "\\images\\";
 			Image pieceI = new Image();
-			string uri = GenerateTheUri(piece);
+			string uri = GenerateTheUri(path, piece);
 			pieceI.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(uri));
 			pieceI.Width = 40;
 			pieceI.Height = 40;

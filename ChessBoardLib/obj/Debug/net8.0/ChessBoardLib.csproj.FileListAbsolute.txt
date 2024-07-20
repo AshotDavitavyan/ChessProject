@@ -36,3 +36,4 @@ C:\Users\ashot\RiderProjects\CP\ChessBoardLib\obj\Debug\net8.0\ChessBoardLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessBoardLib\obj\Debug\net8.0\refint\ChessBoardLib.dll
 C:\Users\ashot\RiderProjects\CP\ChessBoardLib\obj\Debug\net8.0\ChessBoardLib.pdb
 C:\Users\ashot\RiderProjects\CP\ChessBoardLib\obj\Debug\net8.0\ref\ChessBoardLib.dll
+C:\Users\ashot\RiderProjects\CP\ChessBoardLib\obj\Debug\net8.0\ChessBoardLib.sourcelink.json

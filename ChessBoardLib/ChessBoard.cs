@@ -89,15 +89,14 @@ public class ChessBoard
 		get { return _whoseTurn; }
 		set { _whoseTurn = value; }
 	}
-
+	
 	/// <summary>
-	/// Determines if there is a chess piece on the specified position on the chessboard.
+	/// Finds the chess piece at the specified coordinates on the chessboard.
 	/// </summary>
-	/// <param name="cords">The coordinates of the position to check.</param>
-	/// <returns>
-	/// The chess piece occupying the specified position, or <c>null</c> if no piece is present at that position.
-	/// </returns>
-	public ChessPiece? IsPieceOnPosition(BaseCoordinates cords)
+	/// <param name="cords">The coordinates of the position to search for.</param>
+	/// <returns>The chess piece at the specified coordinates.</returns>
+	/// <exception cref="ArgumentException">Thrown when no piece is found at the specified coordinates.</exception>
+	public ChessPiece? FindPieceOnPosition(BaseCoordinates cords)
 	{
 		for (int i = 0; i < _whitePieces.Count; i++)
 		{
@@ -109,12 +108,13 @@ public class ChessBoard
 			if (_blackPieces[i].Cord == cords)
 				return _blackPieces[i];
 		}
+
 		return null;
 	}
-
+	
 	public bool CanPieceGetToPosition(ChessPiece piece, BaseCoordinates coordinate)
 	{
-		ChessPiece pieceOnPosition = IsPieceOnPosition(coordinate);
+		ChessPiece? pieceOnPosition = FindPieceOnPosition(coordinate);
 		if (pieceOnPosition is not null && pieceOnPosition.Color == piece.Color)
 			return false;
 
@@ -125,7 +125,7 @@ public class ChessBoard
 		BaseCoordinates cordCopy = new BaseCoordinates(piece.Cord + vector);
 		while (cordCopy != coordinate)
 		{
-			if (IsPieceOnPosition(cordCopy) is not null)
+			if (FindPieceOnPosition(cordCopy) is not null)
 				return false;
 			cordCopy += vector;
 		}
@@ -362,34 +362,13 @@ public class ChessBoard
 				return EGameState.Normal;
 		}
 	}
-
-	/// <summary>
-	/// Finds the chess piece at the specified coordinates on the chessboard.
-	/// </summary>
-	/// <param name="cords">The coordinates of the position to search for.</param>
-	/// <returns>The chess piece at the specified coordinates.</returns>
-	/// <exception cref="ArgumentException">Thrown when no piece is found at the specified coordinates.</exception>
-	private ChessPiece FindThePiece(BaseCoordinates cords)
-	{
-		for (int i = 0; i < _whitePieces.Count; i++)
-		{
-			if (_whitePieces[i].Cord == cords)
-				return _whitePieces[i];
-		}
-		for (int i = 0; i < _blackPieces.Count; i++)
-		{
-			if (_blackPieces[i].Cord == cords)
-				return _blackPieces[i];
-		}
-		throw new ArgumentException("Piece not found.");
-	}
 	
 	public void MakeMove(ChessPiece pieceToMove, BaseCoordinates destination)
 	{
 		List<ChessPiece> enemyPieces = WhoseTurn == EPieceColor.White ? BlackPieces : WhitePieces;
 		_boardBefore = new ChessBoard(this);
 		
-		ChessPiece? capturedPiece = IsPieceOnPosition(destination);
+		ChessPiece? capturedPiece = FindPieceOnPosition(destination);
 		if (capturedPiece != null)
 			enemyPieces.Remove(capturedPiece);
 		pieceToMove.Move(destination);
@@ -416,10 +395,10 @@ public class ChessBoard
 		List<ChessPiece> enemyPieces = WhoseTurn == EPieceColor.White ? BlackPieces : WhitePieces;
 		_boardBefore = new ChessBoard(this);
 		
-		ChessPiece? capturedPiece = IsPieceOnPosition(move.Destination);
+		ChessPiece? capturedPiece = FindPieceOnPosition(move.Destination);
 		if (capturedPiece != null)
 			enemyPieces.Remove(capturedPiece);
-		FindThePiece(move.Piece.Cord).Move(move.Destination);
+		FindPieceOnPosition(move.Piece.Cord).Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == EPieceColor.White ? EPieceColor.Black : EPieceColor.White;
 	}

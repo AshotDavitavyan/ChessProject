@@ -46,7 +46,7 @@ namespace GameWindows;
 		private void SetActivePieceAndShowValidMoves()
 		{
 			_isPieceClicked = true;
-			_board.ActivePiece = _board.IsPieceOnPosition(_position);
+			_board.ActivePiece = _board.FindPieceOnPosition(_position);
 			ChessBoardDisplayer.ShowInfluenceCoordinates(_board.ActivePiece, _board, ChessBoardSquares);
 		}
 		
@@ -63,7 +63,7 @@ namespace GameWindows;
 				MoveThePiece();
 			else if (!_hasGameStarted)
 				ChessBoardDisplayer.MarkThePosition(ChessBoardSquares, _position, ref _currentPositionElement);
-			else if (_hasGameStarted && _board.IsPieceOnPosition(_position) is not null)
+			else if (_hasGameStarted && _board.FindPieceOnPosition(_position) is not null)
 				SetActivePieceAndShowValidMoves();
 		}
 

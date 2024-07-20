@@ -32,3 +32,4 @@ C:\Users\ashot\RiderProjects\CP\MoveLib\obj\Debug\net8.0\MoveLib.dll
 C:\Users\ashot\RiderProjects\CP\MoveLib\obj\Debug\net8.0\refint\MoveLib.dll
 C:\Users\ashot\RiderProjects\CP\MoveLib\obj\Debug\net8.0\MoveLib.pdb
 C:\Users\ashot\RiderProjects\CP\MoveLib\obj\Debug\net8.0\ref\MoveLib.dll
+C:\Users\ashot\RiderProjects\CP\MoveLib\obj\Debug\net8.0\MoveLib.sourcelink.json
