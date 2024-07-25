@@ -75,7 +75,7 @@ public partial class SecondGameWindow : Window
 			ChessBoardDisplayer.MarkThePosition(ChessBoardSquares, _positionStart, Brushes.Red);
 			ChessBoardDisplayer.MarkThePosition(ChessBoardSquares, _positionEnd, Brushes.Red);
 			MessageBox.Show($"Moving the piece to {path[i].PosX}, {path[i].PosY}.");
-			_board.MakeMove(_board.WhitePieces[0], path[i]);
+			_board.MakeMove(_board.PieceManager.WhitePieces[0], path[i]);
 			ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		}
 		MessageBox.Show($"{path.Count-1} steps.");
@@ -90,7 +90,7 @@ public partial class SecondGameWindow : Window
 		}
 		SwichStartButtonToRestartButton();
 		List<BaseCoordinates> validPath = KnightStepCounter.Start(_positionStart, _positionEnd);
-		_board.AddPiece(new Knight(validPath[^1], EPieceColor.White));
+		_board.PieceManager.AddPiece(new Knight(validPath[^1], GameColor.White));
 		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
 		VisualiseThePath(validPath);
 	}

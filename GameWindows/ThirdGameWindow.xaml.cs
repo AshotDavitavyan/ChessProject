@@ -56,7 +56,7 @@ public partial class ThirdGameWindow : Window
 	
 	private void ChessBoardSquares_MouseDown_GetPlayersMove(object sender, MouseButtonEventArgs e)
 	{
-		if (_board.WhoseTurn != EPieceColor.White)
+		if (_board.WhoseTurn != GameColor.White)
 			return;
 		RegisterClickedPosition(sender, e);
 		if (_isPieceClicked && _board.CanPieceGetToPosition(_board.ActivePiece, _position) && IsMoveValid(_board.ActivePiece, _position))
@@ -65,10 +65,10 @@ public partial class ThirdGameWindow : Window
 			_board.UpdateValidMoves();
 			BotsMove();
 		}
-		else if (_board.FindPieceOnPosition(_position) is not null && _board.FindPieceOnPosition(_position).Color == EPieceColor.White)
+		else if (_board.PieceManager.FindPieceOnPosition(_position) is not null && _board.PieceManager.FindPieceOnPosition(_position).Color == GameColor.White)
 		{
 			_isPieceClicked = true;
-			_board.ActivePiece = _board.FindPieceOnPosition(_position);
+			_board.ActivePiece = _board.PieceManager.FindPieceOnPosition(_position);
 			ChessBoardSquares.Children.Clear();
 			ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
 			ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
@@ -110,7 +110,7 @@ public partial class ThirdGameWindow : Window
 		if (_isPieceClicked)
 			SwitchButtonAddFunction(true);
 		RegisterClickedPosition(sender, e);
-		if (_board.FindPieceOnPosition(_position) is not null)
+		if (_board.PieceManager.FindPieceOnPosition(_position) is not null)
 			SwitchButtonAddFunction(false);
 		ChessBoardDisplayer.MarkThePosition(ChessBoardSquares, _position, ref _currentPosition);
 	}
@@ -123,7 +123,7 @@ public partial class ThirdGameWindow : Window
 	
 	private void Button_Click_Remove(object sender, RoutedEventArgs e)
 	{
-		_board.RemovePiece(_board.FindPieceOnPosition(_position));
+		_board.PieceManager.RemovePiece(_board.PieceManager.FindPieceOnPosition(_position));
 		_board.AddInfluenceCoordinates();
 		ChessBoardSquares.Children.Remove(_currentPosition);
 		ChessBoardSquares.Children.Clear();
@@ -159,8 +159,8 @@ public partial class ThirdGameWindow : Window
 	private void RegisterThePiece(ComboBoxItem selectedPiece, ComboBoxItem selectedPieceColor)
 	{
 		string selectedPieceName = selectedPiece.Name;
-		EPieceColor pieceColor = selectedPieceColor.Name == "White" ? EPieceColor.White : EPieceColor.Black;
-		_board.AddPiece(ChessPieceParser.CreatePiece(_position, selectedPieceName, pieceColor));
+		GameColor pieceColor = selectedPieceColor.Name == "White" ? GameColor.White : GameColor.Black;
+		_board.PieceManager.AddPiece(ChessPieceParser.CreatePiece(_position, selectedPieceName, pieceColor));
 		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares); ////// Make a AddPieceOnBoard function
 		ChessBoardSquares.Children.Remove(_currentPosition);
 		_position = null;
@@ -180,14 +180,14 @@ public partial class ThirdGameWindow : Window
 		int whiteKingCount = 0;
 		int blackKingCount = 0;
 		
-		foreach (ChessPiece piece in _board.WhitePieces)
+		foreach (ChessPiece piece in _board.PieceManager.WhitePieces)
 		{
 			if (piece is King)
 			{
 				whiteKingCount++;
 			}
 		}
-		foreach (ChessPiece piece in _board.BlackPieces)
+		foreach (ChessPiece piece in _board.PieceManager.BlackPieces)
 		{
 			if (piece is King)
 			{
@@ -199,16 +199,16 @@ public partial class ThirdGameWindow : Window
 
 	private bool CheckGameState()
 	{
-		EGameState gameState = _board.GetGameState();
+		GameState gameState = _board.GetGameState();
 		switch (gameState)
 		{
-			case EGameState.Mate:
+			case GameState.Mate:
 				MessageBox.Show($"Mate for {_board.WhoseTurn}s, game over.");
 				return false;
-			case EGameState.Stalemate:
+			case GameState.Stalemate:
 				MessageBox.Show($"Stalemate for {_board.WhoseTurn}s, game over.");
 				return false;
-			case EGameState.Check:
+			case GameState.Check:
 				MessageBox.Show($"Check for {_board.WhoseTurn}s.");
 				break;
 		}

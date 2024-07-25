@@ -5,7 +5,7 @@ namespace ChessPieceLib;
 
 public class Queen : ChessPiece
 {
-	public Queen(BaseCoordinates Cords, EPieceColor color) : base(Cords, 'Q', color, 90)
+	public Queen(BaseCoordinates Cords, GameColor color) : base(Cords, 'Q', color, 90)
 	{
 	}
 	

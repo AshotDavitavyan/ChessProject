@@ -1,0 +1,132 @@
+using ChessPieceLib;
+using CoordinatesLib;
+
+namespace ChessBoardLib;
+
+public class PieceManager
+{
+	private List<ChessPiece> _whitePieces = new ();
+	private List<ChessPiece> _blackPieces = new ();
+	private ChessPiece? _whiteKing;
+	private ChessPiece? _blackKing;
+
+	public List<ChessPiece> WhitePieces
+	{
+		get => _whitePieces;
+		set => _whitePieces = value;
+	}
+	
+	public List<ChessPiece> BlackPieces
+	{
+		get => _blackPieces;
+		set => _blackPieces = value;
+	}
+
+	public ChessPiece? WhiteKing
+	{
+		get => _whiteKing;
+		set => _whiteKing = value;
+	}
+
+	public ChessPiece? BlackKing
+	{
+		get => _blackKing;
+		set => _blackKing = value;
+	}
+	
+	public PieceManager()
+	{
+	}
+
+	public PieceManager(PieceManager copy)
+	{
+		ChessPiece tmp;
+		foreach (ChessPiece piece in copy.WhitePieces)
+		{
+			tmp = piece.Clone();
+			_whitePieces.Add(tmp);
+			if (piece is King)
+				WhiteKing = tmp;
+		}
+		foreach (ChessPiece piece in copy.BlackPieces)
+		{
+			tmp = piece.Clone();
+			_blackPieces.Add(tmp);
+			if (piece is King)
+				BlackKing = tmp;
+		}
+	}
+
+	public ChessPiece? FindPiece(ChessPiece toFind)
+	{
+		foreach (var piece in WhitePieces)
+		{
+			if (piece == toFind)
+				return piece;
+		}
+
+		foreach (var piece in BlackPieces)
+		{
+			if (piece == toFind)
+				return piece;
+		}
+
+		return null;
+	}
+	
+	/// <summary>
+	/// Finds the chess piece at the specified coordinates on the chessboard.
+	/// </summary>
+	/// <param name="cords">The coordinates of the position to search for.</param>
+	/// <returns>The chess piece at the specified coordinates.</returns>
+	/// <exception cref="ArgumentException">Thrown when no piece is found at the specified coordinates.</exception>
+	public ChessPiece? FindPieceOnPosition(BaseCoordinates cords)
+	{
+		foreach (var piece in WhitePieces)
+		{
+			if (piece.Cord == cords)
+				return piece;
+		}
+		foreach (var piece in BlackPieces)
+		{
+			if (piece.Cord == cords)
+				return piece;
+		}
+
+		return null;
+	}
+	
+	public void RemovePiece(ChessPiece piece)
+	{
+		if (piece.Color == GameColor.White)
+			_whitePieces.Remove(piece);
+		else
+			_blackPieces.Remove(piece);
+	}
+	
+	/// <summary>
+	/// Adds a chess piece to the collection of chess pieces.
+	/// </summary>
+	/// <param name="piece"> The piece to add. </param>
+	public void AddPiece(ChessPiece piece)
+	{
+		switch (piece.Color)
+		{
+			case GameColor.Black:
+				_blackPieces.Add(piece);
+				if (piece is King)
+					_blackKing = piece;
+				break;
+			case GameColor.White:
+				_whitePieces.Add(piece);
+				if (piece is King)
+					_whiteKing = piece;
+				break;
+		}
+	}
+
+	public ChessPiece? GetKing(GameColor color)
+	{
+		return color == GameColor.Black ? _blackKing : _whiteKing;
+	}
+}

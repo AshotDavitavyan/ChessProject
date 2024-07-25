@@ -16,7 +16,7 @@ public static class ChessPieceParser
 	/// <param name="color">The color of the piece.</param>
 	/// <returns>The created chess piece.</returns>
 	/// <exception cref="ArgumentException">Thrown when an invalid piece character is provided.</exception>	
-	public static ChessPiece CreatePiece(BaseCoordinates coordinates, string pieceName, EPieceColor color)
+	public static ChessPiece CreatePiece(BaseCoordinates coordinates, string pieceName, GameColor color)
 	{
 		switch (pieceName)
 		{

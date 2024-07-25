@@ -118,8 +118,8 @@ public static class ChessBoardDisplayer
 
 	public static void AddChessPiecesOnBoard(ChessBoard board, Grid chessBoardSquares)
 	{
-		IterateAndAdd(board.WhitePieces, chessBoardSquares);
-		IterateAndAdd(board.BlackPieces, chessBoardSquares);
+		IterateAndAdd(board.PieceManager.WhitePieces, chessBoardSquares);
+		IterateAndAdd(board.PieceManager.BlackPieces, chessBoardSquares);
 	}
 	
 	public static void ShowInfluenceCoordinates(ChessPiece piece, ChessBoard board, Grid chessBoardSquares)

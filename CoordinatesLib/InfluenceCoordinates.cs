@@ -2,9 +2,9 @@ namespace CoordinatesLib;
 
 public class InfluenceCoordinates : BaseCoordinates
 {
-    private EPieceColor _color;
+    private GameColor _color;
 	
-    public InfluenceCoordinates(int posX, int posY, EPieceColor color) : base(posX, posY)
+    public InfluenceCoordinates(int posX, int posY, GameColor color) : base(posX, posY)
     {
         _color = color;
     }
@@ -14,12 +14,12 @@ public class InfluenceCoordinates : BaseCoordinates
         _color = copy.Color;
     }
 	
-    public InfluenceCoordinates(BaseCoordinates cords, EPieceColor color) : base(cords)
+    public InfluenceCoordinates(BaseCoordinates cords, GameColor color) : base(cords)
     {
         _color = color;
     }
 	
-    public EPieceColor Color
+    public GameColor Color
     {
         get { return _color; }
         set { _color = value; }

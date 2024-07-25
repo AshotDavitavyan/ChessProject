@@ -4,7 +4,7 @@ namespace ChessPieceLib;
 
 public class Rook : ChessPiece
 {
-	public Rook(BaseCoordinates Cords, EPieceColor color) : base(Cords, 'R', color, 50)
+	public Rook(BaseCoordinates Cords, GameColor color) : base(Cords, 'R', color, 50)
 	{
 	}
 

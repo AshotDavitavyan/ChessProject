@@ -37,8 +37,8 @@ public static class ChessBot
 	private static int Evaluate(ChessBoard board)
 	{
 		int sum = 0;
-		List<ChessPiece> allyPieces = board.WhoseTurn == EPieceColor.Black ? board.BlackPieces : board.WhitePieces;
-		List<ChessPiece> enemyPieces = board.WhoseTurn == EPieceColor.Black ? board.WhitePieces : board.BlackPieces; 
+		List<ChessPiece> allyPieces = board.WhoseTurn == GameColor.Black ? board.PieceManager.BlackPieces : board.PieceManager.WhitePieces;
+		List<ChessPiece> enemyPieces = board.WhoseTurn == GameColor.Black ? board.PieceManager.WhitePieces : board.PieceManager.BlackPieces; 
 		foreach (ChessPiece piece in allyPieces)
 			sum += piece.Value;
 		foreach (ChessPiece piece in enemyPieces)
@@ -53,12 +53,12 @@ public static class ChessBot
 		List<Move> moves = new List<Move>();
 		foreach (InfluenceCoordinates coordinate in coordinatesList)
 		{
-			if (coordinate.Color != board.WhoseTurn && coordinate.Color != EPieceColor.Mixed)
+			if (coordinate.Color != board.WhoseTurn && coordinate.Color != GameColor.Mixed)
 				continue;
-			ChessPiece? possibleKing = board.FindPieceOnPosition(coordinate);
+			ChessPiece? possibleKing = board.PieceManager.FindPieceOnPosition(coordinate);
 			if (possibleKing is not null && possibleKing is King)
 				continue;
-			List<ChessPiece> pieces = board.WhoseTurn == EPieceColor.Black ? board.BlackPieces : board.WhitePieces;
+			List<ChessPiece> pieces = board.WhoseTurn == GameColor.Black ? board.PieceManager.BlackPieces : board.PieceManager.WhitePieces;
 			foreach (ChessPiece piece in pieces)
 			{
 				board.ActivePiece = piece.Clone();
@@ -67,13 +67,13 @@ public static class ChessBot
 				if (board.CanPieceGetToPosition(piece, coordinate))
 				{
 					board.MakeMove(piece, coordinate);
-					if (board.IsCheck(board.FindTheKing(board.WhoseTurn == EPieceColor.Black ? EPieceColor.White : EPieceColor.Black)))
+					if (board.IsUnderAttack(board.PieceManager.GetKing(board.WhoseTurn == GameColor.Black ? GameColor.White : GameColor.Black)))
 					{
 						board.UnmakeMove();
 						continue;
 					}
 					board.UnmakeMove();
-					Move move = new Move(board.ActivePiece, coordinate, board.FindPieceOnPosition(coordinate));
+					Move move = new Move(board.ActivePiece, coordinate, board.PieceManager.FindPieceOnPosition(coordinate));
 					moves.Add(move);
 				}
 			}
@@ -89,8 +89,8 @@ public static class ChessBot
 		if (depth == 0)
 		{
 			int rawBoard = Evaluate(board);
-			int kingToCenter = ForceKingToCenterEval(board.FindTheKing(EPieceColor.White),
-				board.FindTheKing(EPieceColor.Black), 5);
+			int kingToCenter = ForceKingToCenterEval(board.PieceManager.WhiteKing.Cord,
+				board.PieceManager.BlackKing.Cord, 5);
 			return rawBoard + kingToCenter;
 		}
 
@@ -98,7 +98,7 @@ public static class ChessBot
 
 		if (moves.Count == 0)
 		{
-			if (board.GetGameState() == EGameState.Mate)
+			if (board.GetGameState() == GameState.Mate)
 				return -int.MaxValue;
 			return 0;
 		}

@@ -4,7 +4,7 @@ namespace ChessPieceLib;
 
 public class King : ChessPiece
 {
-	public King(BaseCoordinates Cords, EPieceColor color) : base(Cords, 'K', color, 0)
+	public King(BaseCoordinates Cords, GameColor color) : base(Cords, 'K', color, 0)
 	{
 	}
 	

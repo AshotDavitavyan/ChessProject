@@ -28,3 +28,4 @@ C:\Users\ashot\RiderProjects\CP\KnightStepCounterLib\obj\Debug\net8.0\KnightStep
 C:\Users\ashot\RiderProjects\CP\KnightStepCounterLib\obj\Debug\net8.0\refint\KnightStepCounterLib.dll
 C:\Users\ashot\RiderProjects\CP\KnightStepCounterLib\obj\Debug\net8.0\KnightStepCounterLib.pdb
 C:\Users\ashot\RiderProjects\CP\KnightStepCounterLib\obj\Debug\net8.0\ref\KnightStepCounterLib.dll
+C:\Users\ashot\RiderProjects\CP\KnightStepCounterLib\obj\Debug\net8.0\KnightStepCounterLib.sourcelink.json

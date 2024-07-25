@@ -4,7 +4,7 @@ namespace ChessPieceLib;
 
 public class Bishop : ChessPiece
 {
-    public Bishop(BaseCoordinates Cords, EPieceColor color) : base(Cords, 'B', color, 30)
+    public Bishop(BaseCoordinates Cords, GameColor color) : base(Cords, 'B', color, 30)
     {
     }
 	

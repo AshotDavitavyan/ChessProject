@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KnightStepCounterLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+021945142dce9e49f28ddae3076aaf42e2c0857c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a97799bfc553c3f31a0c4ea20cc8dd230556b833")]
 [assembly: System.Reflection.AssemblyProductAttribute("KnightStepCounterLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KnightStepCounterLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

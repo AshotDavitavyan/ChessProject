@@ -9,12 +9,12 @@ public abstract class ChessPiece
 {
 	protected char _type;
 	protected BaseCoordinates _cord;
-	protected EPieceColor _color;
+	protected GameColor _color;
 	protected int _value;
 	protected List<BaseCoordinates> _validMoves;
 	
 	// Parameterized constructor
-	protected ChessPiece(BaseCoordinates cord, char type, EPieceColor color, int value)
+	protected ChessPiece(BaseCoordinates cord, char type, GameColor color, int value)
 	{
 		Cord = new BaseCoordinates(cord);
 		_validMoves = new List<BaseCoordinates>();
@@ -23,17 +23,28 @@ public abstract class ChessPiece
 		Value = value;
 	}
 	
-	public EPieceColor Color
+	public GameColor Color
 	{
 		get { return _color; }
 		set
 		{
-			if (value != EPieceColor.Black && value != EPieceColor.White)
+			if (value != GameColor.Black && value != GameColor.White)
 				throw new InvalidOperationException("Invalid color.");
 			_color = value;
 		}
 	}
 	
+	public static bool operator ==(ChessPiece c1, ChessPiece c2)
+	{
+		return c1.Cord == c2.Cord && c1.Color == c2.Color && c1.Type == c2.Type;
+	}
+
+	public static bool operator !=(ChessPiece c1, ChessPiece c2)
+	{
+		return !(c1 == c2);
+	}
+
+
 	public List<BaseCoordinates> ValidMoves
 	{
 		get { return _validMoves; }
@@ -72,7 +83,7 @@ public abstract class ChessPiece
 	/// Moves the chess piece to the new position.
 	/// </summary>
 	/// <param name="newPosition">The new coordinates for the chess piece.</param>
-	public void Move(BaseCoordinates newPosition)
+	public virtual void Move(BaseCoordinates newPosition)
 	{
 		_cord = new BaseCoordinates(newPosition);
 	}
