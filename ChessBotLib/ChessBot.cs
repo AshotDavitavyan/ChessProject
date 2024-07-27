@@ -47,42 +47,49 @@ public static class ChessBot
 		return sum;
 	}
 
-	private static List<Move> GenerateMoves(ChessBoard board)
+	private static List<Move> GenerateMoves(ChessBoard board, GameColor whoseTurn)
 	{
-		List<InfluenceCoordinates> coordinatesList = new List<InfluenceCoordinates>(board.InfluenceCoordinates);
-		List<Move> moves = new List<Move>();
+		var coordinatesList = 
+			new List<InfluenceCoordinates>(board.InfluenceCoordinates);
+		var moves = new List<Move>();
 		foreach (InfluenceCoordinates coordinate in coordinatesList)
 		{
-			if (coordinate.Color != board.WhoseTurn && coordinate.Color != GameColor.Mixed)
+			if (coordinate.Color != whoseTurn && coordinate.Color != GameColor.Mixed)
 				continue;
-			ChessPiece? possibleKing = board.PieceManager.FindPieceOnPosition(coordinate);
+			ChessPiece? possibleKing = board[coordinate];
 			if (possibleKing is not null && possibleKing is King)
 				continue;
-			List<ChessPiece> pieces = board.WhoseTurn == GameColor.Black ? board.PieceManager.BlackPieces : board.PieceManager.WhitePieces;
-			foreach (ChessPiece piece in pieces)
-			{
-				board.ActivePiece = piece.Clone();
-				if (piece is King && coordinate.Color != piece.Color)
-					continue;
-				if (board.CanPieceGetToPosition(piece, coordinate))
-				{
-					board.MakeMove(piece, coordinate);
-					if (board.IsUnderAttack(board.PieceManager.GetKing(board.WhoseTurn == GameColor.Black ? GameColor.White : GameColor.Black)))
-					{
-						board.UnmakeMove();
-						continue;
-					}
-					board.UnmakeMove();
-					Move move = new Move(board.ActivePiece, coordinate, board.PieceManager.FindPieceOnPosition(coordinate));
-					moves.Add(move);
-				}
-			}
+			var pieces = whoseTurn == GameColor.Black ? board.PieceManager.BlackPieces : board.PieceManager.WhitePieces;
+			AddMovesForCoordinate(board, whoseTurn, pieces, coordinate, moves);
 		}
 		 
 		moves = moves.OrderByDescending(move => move.MoveValue).ToList();
 		return moves;
 	}
-	
+
+	private static void AddMovesForCoordinate(ChessBoard board, GameColor whoseTurn, List<ChessPiece> pieces,
+		InfluenceCoordinates coordinate, List<Move> moves)
+	{
+		foreach (ChessPiece piece in pieces)
+		{
+			board.ActivePiece = piece.Clone();
+			if (piece is King && coordinate.Color != piece.Color)
+				continue;
+			if (board.CanPieceGetToPosition(piece, coordinate))
+			{
+				board.MakeMove(piece, coordinate);
+				if (board.IsUnderAttack(board.PieceManager.GetKing(whoseTurn)))
+				{
+					board.UnmakeMove();
+					continue;
+				}
+				board.UnmakeMove();
+				Move move = new Move(board.ActivePiece, coordinate, board[coordinate]);
+				moves.Add(move);
+			}
+		}
+	}
+
 	private static int Minimax(ChessBoard board, int depth, int alpha, int beta)
 	{
 		int bestValue = -int.MaxValue;
@@ -94,25 +101,18 @@ public static class ChessBot
 			return rawBoard + kingToCenter;
 		}
 
-		List<Move> moves = GenerateMoves(board);
+		List<Move> moves = GenerateMoves(board, board.WhoseTurn);
 
 		if (moves.Count == 0)
 		{
 			if (board.GetGameState() == GameState.Mate)
-				return -int.MaxValue;
+				return -int.MaxValue + 1;
 			return 0;
 		}
 
 		foreach (Move move in moves)
 		{
-			try
-			{
-				board.MakeMove(move);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-			}
+			board.MakeMove(move);
 			int moveValue = -Minimax(board, depth - 1, -beta, -alpha);
 			board.UnmakeMove();
 			if (moveValue > bestValue)
@@ -135,9 +135,9 @@ public static class ChessBot
 	/// Makes a move on the chessboard using the Minimax algorithm.
 	/// </summary>
 	/// <param name="board">The current chessboard state.</param>
-	public static void MakeMove(ChessBoard board)
+	public static void Think(ChessBoard board)
 	{
 		Minimax(board, 3, -int.MaxValue, int.MaxValue);
-		board.MakeMove(chosenMove);
+		board.MakeMoveLog(chosenMove);
 	}
 }

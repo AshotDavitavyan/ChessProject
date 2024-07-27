@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ChessBoardLib;
+using ChessBoardLib.Data;
 using ChessPieceLib;
 using CoordinatesLib;
 using ChessBotLib;
@@ -43,7 +44,9 @@ public partial class ThirdGameWindow : Window
 	private void MovePlayersPiece()
 	{
 		
-		_board.MakeMove(_board.ActivePiece, _position);
+		_board.MakeMoveLog(new Move(_board.ActivePiece,
+									_position, 
+									_board[_position]));
 		ChessBoardSquares.Children.Clear();
 		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
 		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
@@ -65,10 +68,10 @@ public partial class ThirdGameWindow : Window
 			_board.UpdateValidMoves();
 			BotsMove();
 		}
-		else if (_board.PieceManager.FindPieceOnPosition(_position) is not null && _board.PieceManager.FindPieceOnPosition(_position).Color == GameColor.White)
+		else if (_board[_position] is not null && _board[_position].Color == GameColor.White)
 		{
 			_isPieceClicked = true;
-			_board.ActivePiece = _board.PieceManager.FindPieceOnPosition(_position);
+			_board.ActivePiece = _board[_position];
 			ChessBoardSquares.Children.Clear();
 			ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
 			ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
@@ -110,7 +113,7 @@ public partial class ThirdGameWindow : Window
 		if (_isPieceClicked)
 			SwitchButtonAddFunction(true);
 		RegisterClickedPosition(sender, e);
-		if (_board.PieceManager.FindPieceOnPosition(_position) is not null)
+		if (_board[_position] is not null)
 			SwitchButtonAddFunction(false);
 		ChessBoardDisplayer.MarkThePosition(ChessBoardSquares, _position, ref _currentPosition);
 	}
@@ -118,12 +121,13 @@ public partial class ThirdGameWindow : Window
 	private void Button_Click_Back(object sender, RoutedEventArgs e)
 	{
 		_mainWindow.Show();
-		Hide();
+		new ChessMovesRepository().Clear();
+		Close();
 	}
 	
 	private void Button_Click_Remove(object sender, RoutedEventArgs e)
 	{
-		_board.PieceManager.RemovePiece(_board.PieceManager.FindPieceOnPosition(_position));
+		_board.PieceManager.RemovePiece(_board[_position]);
 		_board.AddInfluenceCoordinates();
 		ChessBoardSquares.Children.Remove(_currentPosition);
 		ChessBoardSquares.Children.Clear();
@@ -222,7 +226,7 @@ public partial class ThirdGameWindow : Window
 	
 	private void BotsMove()
 	{
-		ChessBot.MakeMove(_board);
+		ChessBot.Think(_board);
 		_board.UpdateValidMoves();
 		ChessBoardSquares.Children.Clear();
 		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
@@ -270,6 +274,8 @@ public partial class ThirdGameWindow : Window
 		ChessBoardSquares.MouseDown += ChessBoardSquares_MouseDown_SetUpBoard;
 		Buttons.Children.Add(ButtonAdd);
 		ParentGrid.Children.Add(GeneralInfo);
+		ChessMovesRepository rep = new ChessMovesRepository();
+		rep.Clear();
 	}
 	
 	private void Button_Click_Start(object sender, RoutedEventArgs e)
@@ -286,5 +292,12 @@ public partial class ThirdGameWindow : Window
 		_board.UpdateValidMoves();
 		if (!CheckGameState())
 			GameOver();
+	}
+
+	private void ButtonLog_OnClick(object sender, RoutedEventArgs e)
+	{
+		LogsWindow logsWindow = new LogsWindow();
+		logsWindow.DisplayLogs();
+		logsWindow.Show();
 	}
 }

@@ -1,6 +1,8 @@
-﻿using ChessPieceLib;
+﻿using ChessBoardLib.Data;
+using ChessPieceLib;
 using CoordinatesLib;
 using MoveLib;
+
 
 namespace ChessBoardLib;
 
@@ -170,7 +172,7 @@ public class ChessBoard
 	
 	public bool CanPieceGetToPosition(ChessPiece piece, BaseCoordinates coordinate)
 	{
-		ChessPiece? pieceOnPosition = PieceManager.FindPieceOnPosition(coordinate);
+		ChessPiece? pieceOnPosition = this[coordinate];
 		if (pieceOnPosition is not null && pieceOnPosition.Color == piece.Color)
 			return false;
 
@@ -183,9 +185,7 @@ public class ChessBoard
 		BaseCoordinates cordCopy = new BaseCoordinates(piece.Cord + vector);
 		while (cordCopy != coordinate)
 		{
-			Console.WriteLine("hi");
-			Console.WriteLine($"{piece}");
-			if (PieceManager.FindPieceOnPosition(cordCopy) is not null)
+			if (this[cordCopy] is not null)
 				return false;
 			cordCopy += vector;
 		}
@@ -264,10 +264,37 @@ public class ChessBoard
 	{
 		List<ChessPiece> enemyPieces = WhoseTurn == GameColor.White ? _pieceManager.BlackPieces : _pieceManager.WhitePieces;
 		_undoStack.Push(new ChessBoardMemento(this));
-		ChessPiece? capturedPiece = _pieceManager.FindPieceOnPosition(destination);
+		ChessPiece? capturedPiece = this[destination];
 		if (capturedPiece is not null)
 			enemyPieces.Remove(capturedPiece);
 		pieceToMove.Move(destination);
+		UpdateInfluenceCoordinates();
+		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
+	}
+	
+	/// <summary>
+	/// Makes a move on the chessboard, updating the game state accordingly.
+	/// </summary>
+	/// <param name="move">The move to make.</param>
+	public void MakeMoveLog(Move move)
+	{
+		List<ChessPiece> enemyPieces = WhoseTurn == GameColor.White ? _pieceManager.BlackPieces : _pieceManager.WhitePieces;
+		_undoStack.Push(new ChessBoardMemento(this));
+		
+		ChessPiece? capturedPiece = this[move.Destination];
+		if (capturedPiece is not null)
+			enemyPieces.Remove(capturedPiece);
+		var moveLog = new ChessMoves()
+		{
+			Piece = move.Piece.ToString(),
+			Color = move.Piece.Color == GameColor.White ? "White" : "Black",
+			WhereFrom = move.Piece.Cord.ToString(),
+			WhereTo = move.Destination.ToString(),
+			Capture = capturedPiece?.ToString(),
+			Date = DateTime.Now
+		};
+		Logger.Log(moveLog);
+		this[move.Piece.Cord]?.Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
 	}
@@ -281,11 +308,16 @@ public class ChessBoard
 		List<ChessPiece> enemyPieces = WhoseTurn == GameColor.White ? _pieceManager.BlackPieces : _pieceManager.WhitePieces;
 		_undoStack.Push(new ChessBoardMemento(this));
 		
-		ChessPiece? capturedPiece = _pieceManager.FindPieceOnPosition(move.Destination);
+		ChessPiece? capturedPiece = this[move.Destination];
 		if (capturedPiece is not null)
 			enemyPieces.Remove(capturedPiece);
-		_pieceManager.FindPieceOnPosition(move.Piece.Cord)?.Move(move.Destination);
+		this[move.Piece.Cord]?.Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
+	}
+	
+	public ChessPiece? this [BaseCoordinates cords]
+	{
+		get { return _pieceManager.FindPieceOnPosition(cords); }
 	}
 }

@@ -79,6 +79,8 @@ public abstract class ChessPiece
 
 	public abstract bool IsMoveValid(BaseCoordinates destination);
 	
+	public abstract override string ToString();
+	
 	/// <summary>
 	/// Moves the chess piece to the new position.
 	/// </summary>

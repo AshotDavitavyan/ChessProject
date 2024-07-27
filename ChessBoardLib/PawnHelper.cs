@@ -11,7 +11,7 @@ public static class PawnHelper
 		
 		if (diffs is {diffX: 1, diffY: 1})
 		{
-			ChessPiece? piece = board.PieceManager.FindPieceOnPosition(destination);
+			ChessPiece? piece = board[destination];
 			if (piece is not null && piece.Color != pawn.Color)
 				return true;
 			return false;

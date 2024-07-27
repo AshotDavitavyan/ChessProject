@@ -139,5 +139,8 @@
 				</ComboBox>
 			</Grid>
 		</Grid>
+	    <Grid Height="50" Width="520" VerticalAlignment="Bottom" Margin="25">
+			<Button Name="ButtonLog" Width="100" Height="50" FontSize="20"  HorizontalAlignment="Right" Background="SaddleBrown" Click="ButtonLog_OnClick">GetLogs</Button>
+	    </Grid>
     </Grid>
 </Window>
