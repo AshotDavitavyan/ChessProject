@@ -5,7 +5,8 @@ namespace ChessBoardLib;
 
 public class PieceManager
 {
-	private Dictionary<BaseCoordinates, ChessPiece> _pieces = new();
+	private Dictionary<BaseCoordinates, ChessPiece> _whitePiecesD = new();
+	private Dictionary<BaseCoordinates, ChessPiece> _blackPiecesD = new();
 	private List<ChessPiece> _whitePieces = new ();
 	private List<ChessPiece> _blackPieces = new ();
 	private ChessPiece? _whiteKing;

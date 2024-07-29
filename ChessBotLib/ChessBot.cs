@@ -90,6 +90,16 @@ public static class ChessBot
 		}
 	}
 
+	private static int CalculateEndgameWeight(ChessBoard board)
+	{
+		int enemyPiecesCount = board.WhoseTurn == GameColor.Black ? 
+								board.PieceManager.WhitePieces.Count :
+								board.PieceManager.BlackPieces.Count;
+		if (enemyPiecesCount <= 5)
+			return 5;
+		return 0;
+	}
+
 	private static int Minimax(ChessBoard board, int depth, int alpha, int beta)
 	{
 		int bestValue = -int.MaxValue;
@@ -97,7 +107,7 @@ public static class ChessBot
 		{
 			int rawBoard = Evaluate(board);
 			int kingToCenter = ForceKingToCenterEval(board.PieceManager.WhiteKing.Cord,
-				board.PieceManager.BlackKing.Cord, 5);
+				board.PieceManager.BlackKing.Cord, CalculateEndgameWeight(board));
 			return rawBoard + kingToCenter;
 		}
 
