@@ -111,7 +111,7 @@ public static class ChessBoardDisplayer
 	{
 		foreach (BaseCoordinates move in board.ActivePiece.ValidMoves)
 		{
-			Rectangle square = ChessBoardDisplayer.GetRectangleAtGridPosition(move.PosX, move.PosY, chessBoardSquares);
+			Rectangle square = GetRectangleAtGridPosition(move.PosX, move.PosY, chessBoardSquares);
 			square.Fill = Brushes.Green;
 		}
 	}

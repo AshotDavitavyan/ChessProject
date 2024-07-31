@@ -1,3 +1,4 @@
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,6 +19,8 @@ public partial class ThirdGameWindow : Window
 	private Rectangle? _currentPosition;
 	private BaseCoordinates? _position;
 	private bool _isPieceClicked;
+	private int _stateId = 1;
+	private int _currentStateId = 1;
 	
 	public ThirdGameWindow(MainWindow mainWindow)
 	{
@@ -47,14 +50,10 @@ public partial class ThirdGameWindow : Window
 		_board.MakeMoveLog(new Move(_board.ActivePiece,
 									_position, 
 									_board[_position]));
-		ChessBoardSquares.Children.Clear();
-		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
-		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		_isPieceClicked = false;
 		_board.ActivePiece = null;
 		InstructionsLabel.Content = "Black's turn";
-		if (!CheckGameState())
-			GameOver();
 	}
 	
 	private void ChessBoardSquares_MouseDown_GetPlayersMove(object sender, MouseButtonEventArgs e)
@@ -64,9 +63,24 @@ public partial class ThirdGameWindow : Window
 		RegisterClickedPosition(sender, e);
 		if (_isPieceClicked && _board.CanPieceGetToPosition(_board.ActivePiece, _position) && IsMoveValid(_board.ActivePiece, _position))
 		{
+			if (_stateId != _currentStateId)
+			{
+				new BoardStateRepository().DeleteLogsStartingFrom(_currentStateId + 1);
+				new BoardStateRepository().SetIdentity(_currentStateId);
+				_stateId = _currentStateId;
+			}
+			_stateId++;
+			_currentStateId++;
 			MovePlayersPiece();
 			_board.UpdateValidMoves();
+			if (!CheckGameState())
+				GameOver();
+			_stateId++;
+			_currentStateId++;
 			BotsMove();
+			_board.UpdateValidMoves();
+			if (!CheckGameState())
+				GameOver();
 		}
 		else if (_board[_position] is not null && _board[_position].Color == GameColor.White)
 		{
@@ -122,7 +136,9 @@ public partial class ThirdGameWindow : Window
 	{
 		_mainWindow.Show();
 		new ChessMovesRepository().Clear();
+		new BoardStateRepository().Clear();
 		Close();
+		
 	}
 	
 	private void Button_Click_Remove(object sender, RoutedEventArgs e)
@@ -130,9 +146,7 @@ public partial class ThirdGameWindow : Window
 		_board.PieceManager.RemovePiece(_board[_position]);
 		_board.AddInfluenceCoordinates();
 		ChessBoardSquares.Children.Remove(_currentPosition);
-		ChessBoardSquares.Children.Clear();
-		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
-		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		ButtonAdd.Content = "Add";
 		ButtonAdd.Click -= Button_Click_Remove;
 		ButtonAdd.Click += Button_Click_Add;
@@ -187,16 +201,12 @@ public partial class ThirdGameWindow : Window
 		foreach (ChessPiece piece in _board.PieceManager.WhitePieces)
 		{
 			if (piece is King)
-			{
 				whiteKingCount++;
-			}
 		}
 		foreach (ChessPiece piece in _board.PieceManager.BlackPieces)
 		{
 			if (piece is King)
-			{
 				blackKingCount++;
-			}
 		}
 		return whiteKingCount == 1 && blackKingCount == 1;
 	}
@@ -227,13 +237,8 @@ public partial class ThirdGameWindow : Window
 	private void BotsMove()
 	{
 		ChessBot.Think(_board);
-		_board.UpdateValidMoves();
-		ChessBoardSquares.Children.Clear();
-		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
-		ChessBoardDisplayer.AddChessPiecesOnBoard(_board, ChessBoardSquares);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		InstructionsLabel.Content = "White's turn";
-		if (!CheckGameState())
-			GameOver();
 	}
 
 	private void ChangeButtonStartFunction()
@@ -274,8 +279,8 @@ public partial class ThirdGameWindow : Window
 		ChessBoardSquares.MouseDown += ChessBoardSquares_MouseDown_SetUpBoard;
 		Buttons.Children.Add(ButtonAdd);
 		ParentGrid.Children.Add(GeneralInfo);
-		ChessMovesRepository rep = new ChessMovesRepository();
-		rep.Clear();
+		new ChessMovesRepository().Clear();
+		new BoardStateRepository().Clear();
 	}
 	
 	private void Button_Click_Start(object sender, RoutedEventArgs e)
@@ -290,6 +295,7 @@ public partial class ThirdGameWindow : Window
 		RemoveUnnecessaryComponents();
 		_board.UpdateInfluenceCoordinates();
 		_board.UpdateValidMoves();
+		_board.LogCurrentBoardState();
 		if (!CheckGameState())
 			GameOver();
 	}
@@ -299,5 +305,39 @@ public partial class ThirdGameWindow : Window
 		LogsWindow logsWindow = new LogsWindow();
 		logsWindow.DisplayLogs();
 		logsWindow.Show();
+	}
+
+	private void ButtonBack_OnClick(object sender, RoutedEventArgs e)
+	{
+		if (_currentStateId == 1)
+			return;
+		DataTable dt = new BoardStateRepository().GetById(_currentStateId - 2);
+		DataRow row = dt.Rows[0];
+		BoardState boardState = new BoardState
+		{
+			WhoseTurn = row["WhoseTurn"].ToString(),
+			BlackPieces = row["BlackPieces"].ToString(),
+			WhitePieces = row["WhitePieces"].ToString()
+		};
+		_board.LoadBoardState(boardState);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
+		_currentStateId -= 2;
+	}
+
+	private void ButtonForward_OnClick(object sender, RoutedEventArgs e)
+	{
+		if (_currentStateId == _stateId)
+			return;
+		DataTable dt = new BoardStateRepository().GetById(_currentStateId + 2); 
+		DataRow row = dt.Rows[0];
+		BoardState boardState = new BoardState
+		{
+			WhoseTurn = row["WhoseTurn"].ToString(),
+			BlackPieces = row["BlackPieces"].ToString(),
+			WhitePieces = row["WhitePieces"].ToString()
+		};
+		_board.LoadBoardState(boardState);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
+		_currentStateId += 2;
 	}
 }

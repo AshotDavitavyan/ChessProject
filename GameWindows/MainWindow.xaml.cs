@@ -27,11 +27,7 @@ public partial class MainWindow : Window
 
     private void OpenGame1(object sender, RoutedEventArgs e)
     {
-        if(_firstWindow is null)
-            _firstWindow = new FirstGameWindow(this);
-        if (_secondWindow is not null) _secondWindow.Close();
-        if (_thirdWindow is not null) _thirdWindow.Close();
-        Hide();
+        _firstWindow = new FirstGameWindow(this);
         _firstWindow.Show();
     }
 
@@ -45,21 +41,14 @@ public partial class MainWindow : Window
 
     private void OpenGame2(object sender, RoutedEventArgs e)
     {
-        if (_secondWindow is null)
-            _secondWindow = new SecondGameWindow(this);
-        if (_firstWindow is not null) _firstWindow.Close();
-        if (_thirdWindow is not null) _thirdWindow.Close();
-        Hide();
+        _secondWindow = new SecondGameWindow(this);
         _secondWindow.Show();
     }
     
     private void OpenGame3(object sender, RoutedEventArgs e)
     {
-        if (_thirdWindow is null)
-            _thirdWindow = new ThirdGameWindow(this);
-        if (_firstWindow is not null) _firstWindow.Close();
-        if (_secondWindow is not null) _secondWindow.Close();
         Hide();
+        _thirdWindow = new ThirdGameWindow(this);
         _thirdWindow.Show();
     }
 }

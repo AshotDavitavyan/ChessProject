@@ -10,6 +10,7 @@ public class ChessBoard
 {
 	private ChessPiece? _activePiece;
 	private PieceManager _pieceManager;
+	private HashSet<InfluenceCoordinates> _influenceCoordinatesHs;
 	private List<InfluenceCoordinates> _influenceCoordinates;
 	private GameColor _whoseTurn;
 	private Stack<ChessBoardMemento> _undoStack;
@@ -20,6 +21,7 @@ public class ChessBoard
 		_activePiece = null;
 		_pieceManager = new PieceManager();
 		_influenceCoordinates = new List<InfluenceCoordinates>();
+		_influenceCoordinatesHs = new HashSet<InfluenceCoordinates>();
 		_whoseTurn = GameColor.White;
 		_undoStack = new Stack<ChessBoardMemento>();
 	}
@@ -40,6 +42,12 @@ public class ChessBoard
 	{
 		get { return _influenceCoordinates; }
 		set { _influenceCoordinates = value; }
+	}
+	
+	public HashSet<InfluenceCoordinates> InfluenceCoordinatesHs
+	{
+		get { return _influenceCoordinatesHs; }
+		set { _influenceCoordinatesHs = value; }
 	}
 
 	public GameColor WhoseTurn
@@ -88,7 +96,10 @@ public class ChessBoard
 				cords.PosY = y;
 				GameColor? color = DeterminePositionInfluence(cords);
 				if (color != null)
+				{
 					_influenceCoordinates.Add(new InfluenceCoordinates(cords, color.Value));
+					_influenceCoordinatesHs.Add(new InfluenceCoordinates(cords, color.Value));
+				}
 			}
 		}
 	}	
@@ -99,6 +110,7 @@ public class ChessBoard
 	public void UpdateInfluenceCoordinates()
 	{
 		_influenceCoordinates.Clear();
+		_influenceCoordinatesHs.Clear();
 		AddInfluenceCoordinates();
 	}
 
@@ -140,11 +152,8 @@ public class ChessBoard
 	/// <exception cref="ArgumentException">Thrown when the specified king coordinates are null.</exception>
 	public bool IsUnderAttack(ChessPiece? king)
 	{
-		for (int i = 0; i < _influenceCoordinates.Count; i++)
-		{
-			if (_influenceCoordinates[i] == king.Cord)
-				return true;
-		}
+		if (_influenceCoordinatesHs.Contains(king.Cord))
+			return true;
 		return false;
 	}
 	
@@ -257,6 +266,7 @@ public class ChessBoard
 		_activePiece = undo.ActivePiece;
 		_pieceManager = undo.PieceManager;
 		_influenceCoordinates = undo.InfluenceCoordinates;
+		_influenceCoordinatesHs = undo.InfluenceCoordinatesHs;
 		_whoseTurn = undo.WhoseTurn;
 	}
 	
@@ -271,6 +281,17 @@ public class ChessBoard
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
 	}
+
+	public void LogCurrentBoardState()
+	{
+		BoardState state = new BoardState
+		{
+			WhoseTurn = WhoseTurn == GameColor.White ? "White" : "Black",
+			WhitePieces = _pieceManager.ConvertPieceListToString(_pieceManager.WhitePieces),
+			BlackPieces = _pieceManager.ConvertPieceListToString(_pieceManager.BlackPieces)
+		};
+		Logger.Log(state);
+	}
 	
 	/// <summary>
 	/// Makes a move on the chessboard, updating the game state accordingly.
@@ -280,11 +301,11 @@ public class ChessBoard
 	{
 		List<ChessPiece> enemyPieces = WhoseTurn == GameColor.White ? _pieceManager.BlackPieces : _pieceManager.WhitePieces;
 		_undoStack.Push(new ChessBoardMemento(this));
-		
 		ChessPiece? capturedPiece = this[move.Destination];
 		if (capturedPiece is not null)
 			enemyPieces.Remove(capturedPiece);
-		var moveLog = new ChessMoves()
+		
+		var moveLog = new ChessMoves
 		{
 			Piece = move.Piece.ToString(),
 			Color = move.Piece.Color == GameColor.White ? "White" : "Black",
@@ -297,6 +318,7 @@ public class ChessBoard
 		this[move.Piece.Cord]?.Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
+		LogCurrentBoardState();
 	}
 	
 	/// <summary>
@@ -314,6 +336,17 @@ public class ChessBoard
 		this[move.Piece.Cord]?.Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
+	}
+
+	public void LoadBoardState(BoardState state)
+	{
+		string whitePieces = state.WhitePieces;
+		string blackPieces = state.BlackPieces;
+		_whoseTurn = state.WhoseTurn == "White" ? GameColor.White : GameColor.Black;
+		_pieceManager.WhitePieces = _pieceManager.ConvertStringToPieceList(whitePieces, GameColor.White);
+		_pieceManager.BlackPieces = _pieceManager.ConvertStringToPieceList(blackPieces, GameColor.Black);
+		UpdateInfluenceCoordinates();
+		UpdateValidMoves();
 	}
 	
 	public ChessPiece? this [BaseCoordinates cords]

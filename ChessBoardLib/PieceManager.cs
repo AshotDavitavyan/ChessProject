@@ -1,3 +1,4 @@
+using System.Text;
 using ChessPieceLib;
 using CoordinatesLib;
 
@@ -130,5 +131,33 @@ public class PieceManager
 	public ChessPiece? GetKing(GameColor color)
 	{
 		return color == GameColor.Black ? _blackKing : _whiteKing;
+	}
+
+	public string ConvertPieceListToString(List<ChessPiece> pieces)
+	{
+		StringBuilder sb = new();
+		foreach (var piece in pieces)
+		{
+			sb.Append(piece.Type);
+			sb.Append(piece.Cord);
+		}
+		return sb.ToString();
+	}
+
+	public List<ChessPiece> ConvertStringToPieceList(string piecesString, GameColor color)
+	{
+		List<ChessPiece> pieces = new();
+		List<string> pieceStrings = new();
+		
+		for (int i = 0; i < piecesString.Length; i += 3)
+			pieceStrings.Add(piecesString.Substring(i, 3));
+		foreach (var pieceString in pieceStrings)
+		{
+			string type = pieceString[0].ToString();
+			string position = pieceString[1].ToString() + pieceString[2].ToString();
+			ChessPiece piece = ChessPieceParser.CreatePiece(new BaseCoordinates(position), type, color);
+			pieces.Add(piece);
+		}
+		return pieces;
 	}
 }

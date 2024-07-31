@@ -142,5 +142,9 @@
 	    <Grid Height="50" Width="520" VerticalAlignment="Bottom" Margin="25">
 			<Button Name="ButtonLog" Width="100" Height="50" FontSize="20"  HorizontalAlignment="Right" Background="SaddleBrown" Click="ButtonLog_OnClick">GetLogs</Button>
 	    </Grid>
+	    <Grid Width="186" Height="392" HorizontalAlignment="Right">
+		    <Button Click="ButtonBack_OnClick" Height="50" Width="50" Background="SaddleBrown" FontSize="40" Margin="20 0 0 0 " VerticalAlignment="Bottom" HorizontalAlignment="Left"> B </Button>
+		    <Button Click="ButtonForward_OnClick" Height="50" Width="50" Background="SaddleBrown" FontSize="40" Margin="0 0 20 0 " VerticalAlignment="Bottom" HorizontalAlignment="Right"> F </Button>
+	    </Grid>
     </Grid>
 </Window>

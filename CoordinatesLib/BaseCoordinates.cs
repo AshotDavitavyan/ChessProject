@@ -132,4 +132,16 @@ public class BaseCoordinates
 		char posXChar = (Char)(PosX + 'a');
 		return $"{posXChar}{posYValue}";
 	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(posX, posY);
+	}
+
+	public override bool Equals(object? obj)
+	{
+		return obj is BaseCoordinates coordinates &&
+		       posX == coordinates.posX &&
+		       posY == coordinates.posY;
+	}
 }
