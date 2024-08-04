@@ -47,8 +47,7 @@ public partial class MainWindow : Window
     
     private void OpenGame3(object sender, RoutedEventArgs e)
     {
-        Hide();
-        _thirdWindow = new ThirdGameWindow(this);
-        _thirdWindow.Show();
+        LoginWindow loginWindow = new LoginWindow();
+        loginWindow.Show();
     }
 }

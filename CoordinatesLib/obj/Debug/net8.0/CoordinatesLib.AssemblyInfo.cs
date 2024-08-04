@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CoordinatesLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+364e418f5fca8fc4f0fa25c2ace009d558c6ec4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7562e54d4b1735e639b87b7c921ea6101c91d807")]
 [assembly: System.Reflection.AssemblyProductAttribute("CoordinatesLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CoordinatesLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

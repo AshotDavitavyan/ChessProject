@@ -5,14 +5,7 @@ namespace ChessBoardLib.Data;
 
 public class ChessMovesRepository
 {
-	private readonly string _connectionString = "Data Source=ACER_ASPIRE_5;" +
-	                                            "Initial Catalog=ChessDB;" +
-	                                            "Integrated Security=True;" +
-	                                            "Connect Timeout=30;" +
-	                                            "Encrypt=True;" +
-	                                            "TrustServerCertificate=True;" +
-	                                            "ApplicationIntent=ReadWrite;" +
-	                                            "MultiSubnetFailover=False";
+	private readonly string _connectionString = DatabaseSettings.ConnectionString;
 
 	public DataTable GetAll()
 	{

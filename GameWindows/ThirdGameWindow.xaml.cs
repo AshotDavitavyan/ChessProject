@@ -1,10 +1,10 @@
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ChessBoardLib;
 using ChessBoardLib.Data;
+using ChessBoardLib.Services;
 using ChessPieceLib;
 using CoordinatesLib;
 using ChessBotLib;
@@ -14,25 +14,43 @@ namespace GameWindows;
 
 public partial class ThirdGameWindow : Window
 {
-	private readonly MainWindow _mainWindow;
 	private ChessBoard _board;
 	private Rectangle? _currentPosition;
 	private BaseCoordinates? _position;
 	private bool _isPieceClicked;
 	private int _stateId = 1;
 	private int _currentStateId = 1;
-	
-	public ThirdGameWindow(MainWindow mainWindow)
+
+	public ThirdGameWindow()
 	{
 		InitializeComponent();
+		InitializeGame();
+	}
+	
+	public ThirdGameWindow(BoardSave boardSave)
+	{
+		InitializeComponent();
+		InitializeGame();
+		LoadBoardSave(boardSave);
+	}
+
+	private void InitializeGame()
+	{
 		ChessBoardDisplayer.PaintChessSquares(ChessBoardSquares);
-		_mainWindow = mainWindow;
 		_board = new ChessBoard();
 		_currentPosition = null;
 		_position = null;
 		_isPieceClicked = false;
 	}
 
+	private void LoadBoardSave(BoardSave boardSave)
+	{
+		BoardState boardState = new GameServices().GetBoardState(boardSave);
+		
+		_board.LoadBoardState(boardState);
+		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
+	}
+	
 	private bool IsMoveValid(ChessPiece piece, BaseCoordinates position)
 	{
 		foreach (BaseCoordinates move in piece.ValidMoves)
@@ -40,7 +58,6 @@ public partial class ThirdGameWindow : Window
 			if (move == position)
 				return true;
 		}
-
 		return false;
 	}
 	
@@ -134,11 +151,7 @@ public partial class ThirdGameWindow : Window
 
 	private void Button_Click_Back(object sender, RoutedEventArgs e)
 	{
-		_mainWindow.Show();
-		new ChessMovesRepository().Clear();
-		new BoardStateRepository().Clear();
 		Close();
-		
 	}
 	
 	private void Button_Click_Remove(object sender, RoutedEventArgs e)
@@ -311,14 +324,7 @@ public partial class ThirdGameWindow : Window
 	{
 		if (_currentStateId == 1)
 			return;
-		DataTable dt = new BoardStateRepository().GetById(_currentStateId - 2);
-		DataRow row = dt.Rows[0];
-		BoardState boardState = new BoardState
-		{
-			WhoseTurn = row["WhoseTurn"].ToString(),
-			BlackPieces = row["BlackPieces"].ToString(),
-			WhitePieces = row["WhitePieces"].ToString()
-		};
+		BoardState boardState = new BoardStateRepository().GetById(_currentStateId - 2, 1);
 		_board.LoadBoardState(boardState);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		_currentStateId -= 2;
@@ -328,14 +334,7 @@ public partial class ThirdGameWindow : Window
 	{
 		if (_currentStateId == _stateId)
 			return;
-		DataTable dt = new BoardStateRepository().GetById(_currentStateId + 2); 
-		DataRow row = dt.Rows[0];
-		BoardState boardState = new BoardState
-		{
-			WhoseTurn = row["WhoseTurn"].ToString(),
-			BlackPieces = row["BlackPieces"].ToString(),
-			WhitePieces = row["WhitePieces"].ToString()
-		};
+		BoardState boardState = new BoardStateRepository().GetById(_currentStateId + 2, 1); 
 		_board.LoadBoardState(boardState);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		_currentStateId += 2;

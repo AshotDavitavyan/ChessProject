@@ -5,31 +5,35 @@ namespace ChessBoardLib.Data;
 
 public class BoardStateRepository
 {
-	private readonly string _connectionString = "Data Source=ACER_ASPIRE_5;" +
-	                                            "Initial Catalog=ChessDB;" +
-	                                            "Integrated Security=True;" +
-	                                            "Connect Timeout=30;" +
-	                                            "Encrypt=True;" +
-	                                            "TrustServerCertificate=True;" +
-	                                            "ApplicationIntent=ReadWrite;" +
-	                                            "MultiSubnetFailover=False";
+	private readonly string _connectionString = DatabaseSettings.ConnectionString;
 
 	public DataTable GetAll()
 	{
 		throw new NotImplementedException();
 	}
 
-	public DataTable GetById(int id)
+	public BoardState GetById(int stateId, int gameId)
 	{
 		using SqlConnection connection = new SqlConnection(_connectionString);
 		connection.Open();
-		string sql = "SELECT * FROM BoardStates WHERE StateID = @Id";
+		string sql = "SELECT * FROM BoardStates WHERE StateID = @stateId AND GameID = @GameId";
 		using SqlCommand command = new SqlCommand(sql, connection);
-		command.Parameters.AddWithValue("@Id", id);
+		command.Parameters.AddWithValue("@stateId", stateId);
+		command.Parameters.AddWithValue("@GameId", gameId);
 		DataTable table = new();
 		SqlDataAdapter adapter = new SqlDataAdapter(command);
 		adapter.Fill(table);
-		return table;
+		if (table.Rows.Count == 0)
+			return null;
+		BoardState state = new()
+		{
+			StateId = Convert.ToInt32(table.Rows[0]["StateID"]),
+			WhoseTurn = table.Rows[0]["WhoseTurn"].ToString(),
+			WhitePieces = table.Rows[0]["WhitePieces"].ToString(),
+			BlackPieces = table.Rows[0]["BlackPieces"].ToString(),
+			GameId = Convert.ToInt32(table.Rows[0]["GameID"])
+		};
+		return state;
 	}
 	
 	public void Clear()
@@ -76,5 +80,34 @@ public class BoardStateRepository
 		using SqlCommand command = new SqlCommand(sql, connection);
 		command.Parameters.AddWithValue("@Id", currentStateId);
 		command.ExecuteNonQuery();
+	}
+
+	public List<BoardSave> GetByUserId(int userUserId)
+	{
+		List<BoardSave> boardSaves = new();
+		using SqlConnection connection = new SqlConnection(_connectionString);
+		connection.Open();
+		string sql = "SELECT GameID FROM BoardStates " +
+		             "WHERE UserID = @UserId";
+		using SqlCommand command = new SqlCommand(sql, connection);
+		command.Parameters.AddWithValue("@UserId", userUserId);
+		DataTable table = new DataTable();
+		SqlDataAdapter adapter = new SqlDataAdapter(command);
+		
+		foreach (DataRow row in table.Rows)
+		{
+			int gid = Convert.ToInt32(row["GameID"]);
+			int sid = Convert.ToInt32(row["StateID"]);
+			int uid = Convert.ToInt32(row["UserID"]);
+			BoardSave boardSave = new()
+			{
+				GameId = gid,
+				StateId = sid,
+				UserId = uid
+			};
+			boardSaves.Add(boardSave);
+		}
+
+		return boardSaves;
 	}
 }

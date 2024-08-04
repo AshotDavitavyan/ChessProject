@@ -3,6 +3,7 @@ using ChessPieceLib;
 using CoordinatesLib;
 using MoveLib;
 
+// hgzraryan@yandex.ru
 
 namespace ChessBoardLib;
 

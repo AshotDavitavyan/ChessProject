@@ -87,3 +87,9 @@ C:\Users\ashot\RiderProjects\CP\GameWindows\bin\Debug\net8.0-windows\runtimes\un
 C:\Users\ashot\RiderProjects\CP\GameWindows\bin\Debug\net8.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LogsWindow.g.cs
 C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LogsWindow.baml
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LoginWindow.g.cs
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LoginWindow.baml
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LoadGameWindow.baml
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\LoadGameWindow.g.cs
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\WelcomeWindow.g.cs
+C:\Users\ashot\RiderProjects\CP\GameWindows\obj\Debug\net8.0-windows\WelcomeWindow.baml
