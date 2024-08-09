@@ -3,7 +3,6 @@ using ChessPieceLib;
 using CoordinatesLib;
 using MoveLib;
 
-// hgzraryan@yandex.ru
 
 namespace ChessBoardLib;
 
@@ -283,13 +282,15 @@ public class ChessBoard
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
 	}
 
-	public void LogCurrentBoardState()
+	public void LogCurrentBoardState(int gameId, int stateId)
 	{
 		BoardState state = new BoardState
 		{
 			WhoseTurn = WhoseTurn == GameColor.White ? "White" : "Black",
 			WhitePieces = _pieceManager.ConvertPieceListToString(_pieceManager.WhitePieces),
-			BlackPieces = _pieceManager.ConvertPieceListToString(_pieceManager.BlackPieces)
+			BlackPieces = _pieceManager.ConvertPieceListToString(_pieceManager.BlackPieces),
+			GameId = gameId,
+			StateId = stateId
 		};
 		Logger.Log(state);
 	}
@@ -298,7 +299,7 @@ public class ChessBoard
 	/// Makes a move on the chessboard, updating the game state accordingly.
 	/// </summary>
 	/// <param name="move">The move to make.</param>
-	public void MakeMoveLog(Move move)
+	public void MakeMoveLog(Move move, int gameId, int stateId)
 	{
 		List<ChessPiece> enemyPieces = WhoseTurn == GameColor.White ? _pieceManager.BlackPieces : _pieceManager.WhitePieces;
 		_undoStack.Push(new ChessBoardMemento(this));
@@ -319,7 +320,7 @@ public class ChessBoard
 		this[move.Piece.Cord]?.Move(move.Destination);
 		UpdateInfluenceCoordinates();
 		WhoseTurn = WhoseTurn == GameColor.White ? GameColor.Black : GameColor.White;
-		LogCurrentBoardState();
+		LogCurrentBoardState(gameId, stateId);
 	}
 	
 	/// <summary>
@@ -346,6 +347,16 @@ public class ChessBoard
 		_whoseTurn = state.WhoseTurn == "White" ? GameColor.White : GameColor.Black;
 		_pieceManager.WhitePieces = _pieceManager.ConvertStringToPieceList(whitePieces, GameColor.White);
 		_pieceManager.BlackPieces = _pieceManager.ConvertStringToPieceList(blackPieces, GameColor.Black);
+		foreach (ChessPiece piece in _pieceManager.WhitePieces)
+		{
+			if (piece is King)
+				_pieceManager.WhiteKing = piece;
+		}
+		foreach (ChessPiece piece in _pieceManager.BlackPieces)
+		{
+			if (piece is King)
+				_pieceManager.BlackKing = piece;
+		}
 		UpdateInfluenceCoordinates();
 		UpdateValidMoves();
 	}

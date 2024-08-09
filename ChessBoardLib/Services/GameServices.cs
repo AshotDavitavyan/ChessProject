@@ -22,4 +22,35 @@ public class GameServices
 	{
 		return new BoardStateRepository().GetByUserId(userId);
 	}
+
+	public static int GetLastGameId()
+	{
+		return new BoardSavesRepository().GetLastId();
+	}
+
+	public static List<BoardState> GetBoardStatesForGame(int gameId)
+	{
+		return new BoardStateRepository().GetAllByGameId(gameId);
+	}
+
+	public static BoardState? GetLastState(int gameId)
+	{
+		return new BoardStateRepository().GetLastStateForGame(gameId);
+	}
+	
+	public static BoardState? GetFirstState(int gameId)
+	{
+		return new BoardStateRepository().GetFirstStateForGame(gameId);
+	}
+
+	public static int GetLastStateId()
+	{
+		return new BoardStateRepository().GetLastStateId();
+	}
+
+	public static int GetFirstStateId(int boardSaveGameId)
+	{
+		BoardState? firstState = GetFirstState(boardSaveGameId);
+		return firstState?.StateId ?? 0;
+	}
 }

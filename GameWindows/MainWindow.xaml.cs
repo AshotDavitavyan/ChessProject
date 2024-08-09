@@ -49,5 +49,6 @@ public partial class MainWindow : Window
     {
         LoginWindow loginWindow = new LoginWindow();
         loginWindow.Show();
+        Close();
     }
 }

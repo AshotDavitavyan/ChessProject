@@ -14,24 +14,70 @@ namespace GameWindows;
 
 public partial class ThirdGameWindow : Window
 {
+	private bool _isLoaded;
+	private int _userId;
 	private ChessBoard _board;
 	private Rectangle? _currentPosition;
 	private BaseCoordinates? _position;
 	private bool _isPieceClicked;
-	private int _stateId = 1;
-	private int _currentStateId = 1;
+	private GameStateManager _gameStateManager;
 
-	public ThirdGameWindow()
+	public ThirdGameWindow(int UserId)
 	{
+		_userId = UserId;
 		InitializeComponent();
 		InitializeGame();
+		InitializeGameState();
 	}
 	
 	public ThirdGameWindow(BoardSave boardSave)
 	{
+		_isLoaded = true;
+		_userId = boardSave.UserId;
 		InitializeComponent();
 		InitializeGame();
 		LoadBoardSave(boardSave);
+	}
+	
+	private void InitializeGameState()
+	{
+		int stateId = GameServices.GetLastStateId() + 1;
+		_gameStateManager = new GameStateManager
+		{
+			LastStateId = stateId,
+			CurrentStateId = stateId,
+			FirstStateId = stateId,
+			CurrentGameId = GameServices.GetLastGameId() + 1
+		};
+	}
+
+	private void InitializeGameState(BoardSave boardSave)
+	{
+		List<BoardState> states = GameServices.GetBoardStatesForGame(boardSave.GameId);
+		int currentStateId = -1;
+		int firstStateId = GameServices.GetLastStateId() + 1;
+		int gameId = GameServices.GetLastGameId() + 1;
+		foreach (BoardState state in states)
+		{
+			if (state.StateId == boardSave.StateId)
+				currentStateId = GameServices.GetLastStateId() + 1;
+			state.GameId = gameId;
+			Logger.Log(state);
+		}
+		_gameStateManager = new GameStateManager
+		{
+			LastStateId = GameServices.GetLastStateId(),
+			CurrentStateId = currentStateId,
+			FirstStateId = firstStateId,
+			CurrentGameId = gameId
+		};
+
+		Logger.Log(new BoardSave
+		{
+			GameId = _gameStateManager.CurrentGameId,
+			StateId = _gameStateManager.FirstStateId,
+			UserId = _userId
+		});
 	}
 
 	private void InitializeGame()
@@ -46,7 +92,7 @@ public partial class ThirdGameWindow : Window
 	private void LoadBoardSave(BoardSave boardSave)
 	{
 		BoardState boardState = new GameServices().GetBoardState(boardSave);
-		
+		InitializeGameState(boardSave);
 		_board.LoadBoardState(boardState);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 	}
@@ -66,7 +112,7 @@ public partial class ThirdGameWindow : Window
 		
 		_board.MakeMoveLog(new Move(_board.ActivePiece,
 									_position, 
-									_board[_position]));
+									_board[_position]), _gameStateManager.CurrentGameId, _gameStateManager.CurrentStateId);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		_isPieceClicked = false;
 		_board.ActivePiece = null;
@@ -80,20 +126,14 @@ public partial class ThirdGameWindow : Window
 		RegisterClickedPosition(sender, e);
 		if (_isPieceClicked && _board.CanPieceGetToPosition(_board.ActivePiece, _position) && IsMoveValid(_board.ActivePiece, _position))
 		{
-			if (_stateId != _currentStateId)
-			{
-				new BoardStateRepository().DeleteLogsStartingFrom(_currentStateId + 1);
-				new BoardStateRepository().SetIdentity(_currentStateId);
-				_stateId = _currentStateId;
-			}
-			_stateId++;
-			_currentStateId++;
+			_gameStateManager.CheckAndUpdateStateIds();
+
+			_gameStateManager.IncrementIds();
 			MovePlayersPiece();
 			_board.UpdateValidMoves();
 			if (!CheckGameState())
 				GameOver();
-			_stateId++;
-			_currentStateId++;
+			_gameStateManager.IncrementIds();
 			BotsMove();
 			_board.UpdateValidMoves();
 			if (!CheckGameState())
@@ -151,6 +191,8 @@ public partial class ThirdGameWindow : Window
 
 	private void Button_Click_Back(object sender, RoutedEventArgs e)
 	{
+		new BoardSavesRepository().DeleteGameSave(_gameStateManager.CurrentGameId);
+		new BoardStateRepository().DeleteGameStates(_gameStateManager.CurrentGameId);
 		Close();
 	}
 	
@@ -250,6 +292,7 @@ public partial class ThirdGameWindow : Window
 	private void BotsMove()
 	{
 		ChessBot.Think(_board);
+		_board.MakeMoveLog(ChessBot.Think(_board), _gameStateManager.CurrentGameId, _gameStateManager.CurrentStateId);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
 		InstructionsLabel.Content = "White's turn";
 	}
@@ -274,7 +317,6 @@ public partial class ThirdGameWindow : Window
 	private void RemoveUnnecessaryComponents()
 	{
 		ChangeButtonStartFunction();
-		Buttons.Children.Remove(ButtonAdd);
 		ParentGrid.Children.Remove(GeneralInfo);
 		InstructionsLabel.Content = "White's turn";
 	}
@@ -293,7 +335,29 @@ public partial class ThirdGameWindow : Window
 		Buttons.Children.Add(ButtonAdd);
 		ParentGrid.Children.Add(GeneralInfo);
 		new ChessMovesRepository().Clear();
-		new BoardStateRepository().Clear();
+		new BoardSavesRepository().DeleteGameLog(_gameStateManager.CurrentGameId);
+		new BoardStateRepository().DeleteGameLogsStartingFrom(_gameStateManager.FirstStateId, _gameStateManager.CurrentGameId);
+	}
+
+	private void SaveGame(object sender, RoutedEventArgs e)
+	{
+		List<BoardState> states = GameServices.GetBoardStatesForGame(_gameStateManager.CurrentGameId);
+		int gameId = GameServices.GetLastGameId() + 1;
+		int currentStateId = -1;
+		foreach (BoardState state in states)
+		{
+			if (state.StateId == _gameStateManager.CurrentStateId) 
+				currentStateId = GameServices.GetLastStateId() + 1;
+			state.GameId = gameId;
+			Logger.Log(state);
+		}
+		Logger.Log(new BoardSave
+		{
+			GameId = gameId,
+			StateId = currentStateId,
+			UserId = _userId
+		});
+		MessageBox.Show("Game saved successfully!");
 	}
 	
 	private void Button_Click_Start(object sender, RoutedEventArgs e)
@@ -305,10 +369,24 @@ public partial class ThirdGameWindow : Window
 		}
 		ChessBoardSquares.MouseDown -= ChessBoardSquares_MouseDown_SetUpBoard;
 		ChessBoardSquares.MouseDown += ChessBoardSquares_MouseDown_GetPlayersMove;
+		ButtonAdd.Content = "Save";
+		ButtonAdd.Click -= Button_Click_Add;
+		ButtonAdd.Click += SaveGame;
 		RemoveUnnecessaryComponents();
 		_board.UpdateInfluenceCoordinates();
 		_board.UpdateValidMoves();
-		_board.LogCurrentBoardState();
+		if (!_isLoaded)
+		{
+			_board.LogCurrentBoardState(_gameStateManager.CurrentGameId, _gameStateManager.CurrentStateId);
+			Logger.Log(new BoardSave
+			{
+				GameId = GameServices.GetLastGameId() + 1,
+				StateId = GameServices.GetLastStateId(),
+				UserId = _userId,
+				SaveDate = DateTime.Now
+			});
+		}
+		_gameStateManager.CurrentGameId = GameServices.GetLastGameId();
 		if (!CheckGameState())
 			GameOver();
 	}
@@ -322,21 +400,19 @@ public partial class ThirdGameWindow : Window
 
 	private void ButtonBack_OnClick(object sender, RoutedEventArgs e)
 	{
-		if (_currentStateId == 1)
+		BoardState? stateToLoad = _gameStateManager.GoBack();
+		if (stateToLoad is null)
 			return;
-		BoardState boardState = new BoardStateRepository().GetById(_currentStateId - 2, 1);
-		_board.LoadBoardState(boardState);
+		_board.LoadBoardState(stateToLoad);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
-		_currentStateId -= 2;
 	}
 
 	private void ButtonForward_OnClick(object sender, RoutedEventArgs e)
 	{
-		if (_currentStateId == _stateId)
+		BoardState? stateToLoad = _gameStateManager.GoForward();
+		if (stateToLoad is null)
 			return;
-		BoardState boardState = new BoardStateRepository().GetById(_currentStateId + 2, 1); 
-		_board.LoadBoardState(boardState);
+		_board.LoadBoardState(stateToLoad);
 		ChessBoardDisplayer.UpdateChessBoard(ChessBoardSquares, _board);
-		_currentStateId += 2;
 	}
 }

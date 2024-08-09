@@ -41,4 +41,17 @@ public class UsersRepository
 		};
 		return user;
 	}
+
+	public int GetLastUserId()
+	{
+		using SqlConnection connection = new SqlConnection(_connectionString);
+		connection.Open();
+
+		string sql = "SELECT IDENT_CURRENT('Users') AS Current_Identity";
+		using SqlCommand command = new SqlCommand(sql, connection);
+		object result = command.ExecuteScalar();
+		if (result == DBNull.Value)
+			return 0;
+		return Convert.ToInt32(result);
+	}
 }

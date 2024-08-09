@@ -145,9 +145,9 @@ public static class ChessBot
 	/// Makes a move on the chessboard using the Minimax algorithm.
 	/// </summary>
 	/// <param name="board">The current chessboard state.</param>
-	public static void Think(ChessBoard board)
+	public static Move Think(ChessBoard board)
 	{
 		Minimax(board, 3, -int.MaxValue, int.MaxValue);
-		board.MakeMoveLog(chosenMove);
+		return chosenMove;
 	}
 }

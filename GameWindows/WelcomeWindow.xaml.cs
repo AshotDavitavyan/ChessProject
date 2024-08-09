@@ -17,7 +17,7 @@ public partial class WelcomeWindow : Window
 
 	private void ButtonNewGame_Click(object sender, RoutedEventArgs e)
 	{
-		new ThirdGameWindow().Show();
+		new ThirdGameWindow(_user.UserId).Show();
 		Close();
 	}
 

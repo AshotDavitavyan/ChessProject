@@ -26,6 +26,7 @@ public partial class LoginWindow : Window
 			MessageBox.Show("User not found, creating a new user...");
 			User newUser = new User{UserName = username, Password = password};
 			new UsersRepository().Save(newUser);
+			newUser.UserId = new UsersRepository().GetLastUserId();
 			new WelcomeWindow(newUser).Show();
 			Close();
 			return;
